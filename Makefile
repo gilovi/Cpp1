@@ -1,5 +1,5 @@
 CC=g++
-CPPFLAGS  = c++11 -g -Wextra -Wall
+CPPFLAGS  = -std=c++11 -g -Wextra -Wall
 RM=rm -f
 
 SRCS=IntMatrix.cpp IntMatrixDriver.cpp 
@@ -15,9 +15,9 @@ IntMatrixMainDriver: $(OBJS)
 IntMatrix: IntMatrix.o
 	
 IntMatrix.o: IntMatrix.cpp IntMatrix.h
-# generates c or o?
-IntMatrixDriver.o: IntMatrix.o
-	#what to do?
+
+IntMatrixDriver.o: IntMatrixDriver.cpp IntMatrix.o
+
 
 clean:
-        $(RM) *.o *~ $(MAIN)
+	$(RM) *.o *~ $(MAIN)
