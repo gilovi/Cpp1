@@ -3,7 +3,7 @@ CPPFLAGS  = -std=c++11 -g -Wextra -Wall
 RM=rm -f
 
 SRCS=IntMatrix.cpp IntMatrixDriver.cpp 
-OBJS=$(subst .cc,.o,$(SRCS))
+OBJS=$(subst .cpp,.o,$(SRCS))
 
 MAIN = IntMatrixMainDriver
 
