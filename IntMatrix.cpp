@@ -8,13 +8,13 @@ using namespace std;
 IntMat::IntMat():
 _rows(0),_cols(0),_mat(nullptr)
 {
-	
+
 }
 
 IntMat::IntMat(const IntMat& toCopy):
 _rows(toCopy._rows), _cols(toCopy._cols)
 {
-	
+
 	initMat(_rows,_cols);
 	if (0 == toCopy._rows && 0 == toCopy._cols)
 	{
@@ -25,9 +25,9 @@ _rows(toCopy._rows), _cols(toCopy._cols)
 		for (int i = 0; i<_rows; i++)
 		{
 			memcpy(_mat[i], toCopy._mat[i], _cols*sizeof(int));
-		}	
+		}
 	}
-	
+
 }
 
 IntMat::IntMat(int rows, int cols ,int** mat):
@@ -39,7 +39,7 @@ IntMat::~IntMat()
 {
 	delMat();
 }
-	
+
 IntMat::IntMat(int rows, int cols):
 _rows(rows), _cols(cols)
 {
@@ -64,7 +64,7 @@ IntMat& IntMat::operator+=(const IntMat& rval)
 	}
 	return *this;
 }
-	
+
 IntMat IntMat::operator+(const IntMat& rval)
 {
 
@@ -72,7 +72,7 @@ IntMat IntMat::operator+(const IntMat& rval)
 	res += rval;
 	return res;
 }
-	
+
 IntMat& IntMat::operator-=(const IntMat& rval)
 {
  	//TODO add a throw /assert to verify correct sizes (in all)
@@ -85,40 +85,40 @@ IntMat& IntMat::operator-=(const IntMat& rval)
 	}
 	return *this;
 }
-	
+
 IntMat IntMat::operator-(const IntMat& rval)
 {
-	
+
 	IntMat res = *this;
 	res -= rval;
-	
+
 	return res;
 }
-	
+
 IntMat& IntMat::operator*=(const IntMat& rval)
 {
 	assert (_cols == rval._rows);
 	IntMat res = IntMat(_rows, rval._cols);
-	for (int i = 0; i < res._cols; i++)
+	for (int j = 0; j < res._cols; j++)
 	{
 		int rCol[rval._rows];
-		getCol(rCol, rval , i);
-		for (int j = 0; j < res._rows; j++)
+		getCol(rCol, rval , j);
+		for (int i = 0; i < res._rows; i++)
 		{
-			res._mat[j][i] = mul(_mat[i] , rCol, _cols) ;
+			res._mat[i][j] = mul(_mat[i] , rCol, _cols) ;
 		}
 	}
-	*this = res;
+	swap(res);
 	return *this;
 }
-	
+
 IntMat IntMat::operator*(const IntMat& rval)
 {
 	IntMat res = *this;
 	res *= rval;
 	return res;
 }
-	
+
 std::ostream& operator<<(std::ostream& os, const IntMat& mat)
 {
 	for (int i=0 ; i < mat._rows ; i++)
@@ -130,7 +130,6 @@ std::ostream& operator<<(std::ostream& os, const IntMat& mat)
 				{
 					os << " ";
 				}
-				
 			}
 			os << endl;
 		}
@@ -146,11 +145,11 @@ IntMat IntMat::trans(const IntMat& orig)
 		{
 			res._mat[j][i] = orig._mat[i][j];
 		}
-			
+
 	}
 	return res;
 }
-	
+
 int IntMat::trace(const IntMat& mat)
 {
 	int res = 0;
@@ -162,14 +161,14 @@ int IntMat::trace(const IntMat& mat)
 	return res;
 }
 /*
- * 
+ *
  * name: IntMat::operator ==
  * @param
  * @return
- * 
+ *
  */
 bool IntMat::operator==(const IntMat& rhs)
-{ 
+{
 	if (_rows != rhs._rows || _cols != rhs._cols  )
 	{
 	return false;
@@ -187,7 +186,7 @@ bool IntMat::operator==(const IntMat& rhs)
 			}
 		}
 		return true;
-	}	
+	}
 }
 
 bool IntMat::operator!=(const IntMat& rhs)
@@ -196,19 +195,19 @@ bool IntMat::operator!=(const IntMat& rhs)
 }
 
 void IntMat::swap(IntMat& other)
-{	
+{
 	int** tmp = _mat;
 	_mat = other._mat;
 	other._mat = tmp;
-	
+
 	int r,c;
 	r = _rows;
 	c = _cols;
-	
+
 	_rows = other._rows;
 	_cols = other._cols;
 	other._rows = r;
-	other._rows = c;
+	other._cols = c;
 }
 
 void IntMat::delMat()
@@ -236,33 +235,31 @@ void IntMat::initMat(const int rows, const int cols)
 	}
 }
 /*
- * 
+ *
  * name: unknown
  * @param
  * @return
- * 
+ *
  */
 
-void IntMat::getCol(int res[], const IntMat mat, const int colNum) const
+void IntMat::getCol(int res[], const IntMat& mat, const int colNum) const
 {
-	cout<<endl;
 	for (int i = 0 ; i<mat._rows ; i++)
 	{
 		res[i]=mat._mat[i][colNum];
 	}
-
 }
 
 /*
- * a helper function to perform a vector '*' operator on tow vectors. 
+ * a helper function to perform a vector '*' operator on tow vectors.
  * name: mul
- * @param a the first vector 
- * @param b the second vector 
+ * @param a the first vector
+ * @param b the second vector
  * @return the vector * operator result.
- * 
+ *
  */
 
-int mul(int a[] , int b[], int size)
+int mul(int a[] , int b[], const int size)
 {
 	int res = 0;
 	for(int i=0; i < size; i++)
