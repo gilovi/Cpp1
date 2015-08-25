@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <iostream>
 
 using namespace std;
 
@@ -54,7 +55,11 @@ IntMat& IntMat::operator=(IntMat& rval)
 
 IntMat& IntMat::operator+=(const IntMat& rval)
 {
-	//TODO add a throw /assert to verify correct sizes
+	if (_rows != rval._rows || _cols != rval._cols)
+    {
+        throw "matrix sizes don't match.";
+    }
+
 	for (int i=0 ; i<_rows ; i++)
 	{
 		for(int j=0; j< _cols; j++)
@@ -75,7 +80,11 @@ IntMat IntMat::operator+(const IntMat& rval)
 
 IntMat& IntMat::operator-=(const IntMat& rval)
 {
- 	//TODO add a throw /assert to verify correct sizes (in all)
+    if (_rows != rval._rows || _cols != rval._cols)
+    {
+        throw "matrix sizes don't match.";
+    }
+
 	for (int i=0 ; i<_rows; i++)
 	{
 		for(int j=0; j< _cols; j++)
@@ -97,7 +106,11 @@ IntMat IntMat::operator-(const IntMat& rval)
 
 IntMat& IntMat::operator*=(const IntMat& rval)
 {
-	assert (_cols == rval._rows);
+    if (_cols == rval._rows)
+    {
+        throw "matrix sizes don't match.";
+    }
+
 	IntMat res = IntMat(_rows, rval._cols);
 	for (int j = 0; j < res._cols; j++)
 	{
@@ -152,8 +165,12 @@ IntMat IntMat::trans(const IntMat& orig)
 
 int IntMat::trace(const IntMat& mat)
 {
+    if (mat._rows != mat._cols)
+    {
+        throw "matrix not square.";
+    }
 	int res = 0;
-	assert(mat._rows==mat._cols);
+	//assert(mat._rows==mat._cols);
 	for (int i = 0 ; i<mat._rows ; i++)
 	{
 		res += mat._mat[i][i];
@@ -234,16 +251,10 @@ void IntMat::initMat(const int rows, const int cols)
 		_mat[i] = new int[cols];
 	}
 }
-/*
- *
- * name: unknown
- * @param
- * @return
- *
- */
 
 void IntMat::getCol(int res[], const IntMat& mat, const int colNum) const
 {
+    assert(mat._cols < colNum);
 	for (int i = 0 ; i<mat._rows ; i++)
 	{
 		res[i]=mat._mat[i][colNum];
