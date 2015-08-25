@@ -2,6 +2,7 @@
 
 class IntMat {
 	public:
+
 		IntMat();
 		IntMat(const IntMat& toCopy);
 		IntMat(int rows, int cols);
@@ -19,7 +20,7 @@ class IntMat {
 		friend std::ostream& operator<<(std::ostream& os, const IntMat& mat);
 
 		static IntMat trans(const IntMat&);
-		static int trace(const IntMat&);
+		static int s_trace(const IntMat&);
 
 	private:
 		int _rows;

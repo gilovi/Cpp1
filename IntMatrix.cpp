@@ -139,7 +139,7 @@ std::ostream& operator<<(std::ostream& os, const IntMat& mat)
 			for (int j = 0 ; j < mat._cols; j++)
 			{
 				os << mat._mat[i][j];
-				if (j != mat._cols)
+				if (j != mat._cols - 1)
 				{
 					os << " ";
 				}
@@ -163,7 +163,7 @@ IntMat IntMat::trans(const IntMat& orig)
 	return res;
 }
 
-int IntMat::trace(const IntMat& mat)
+int IntMat::s_trace(const IntMat& mat)
 {
     if (mat._rows != mat._cols)
     {

@@ -44,14 +44,15 @@ int main()
 		IntMat a = getMatrix(op, ++matNum);
         IntMat b = getMatrix(op, ++matNum);
 
-        printMat(matNum , a);
+        matNum = 0 ;
+        printMat(++matNum , a);
 		if (op <= TOW_MATRICES_IN) // the input suppose to be 2 matrices.
 		{
-            printMat(matNum , b);
+            printMat(++matNum , b);
 		}
 		if (op == SCALAR_OUT) // spacial case when output is scalar
         {
-        printRes(IntMat::trace(a));
+        printRes(IntMat::s_trace(a));
         }
         else
         {
@@ -65,11 +66,11 @@ int main()
 void opChoose(int& op)
 {
 	cout << "Choose operation:" << endl;
-	cout << "1.\tadd"<< endl;
-	cout << "2.\tsub"<< endl;
-	cout << "3.\tmul"<< endl;
-	cout << "4.\ttrans"<< endl;
-	cout << "5.\ttrace"<< endl;
+	cout << "1. add"<< endl;
+	cout << "2. sub"<< endl;
+	cout << "3. mul"<< endl;
+	cout << "4. trans"<< endl;
+	cout << "5. trace"<< endl;
 
 	cin >> op;
 	if (!(op <= NUM_OF_OPTIONS && op > 0))
@@ -110,7 +111,7 @@ void printMatReqMsg(int op)
 			break;
 
 	}
-	cout << "Operation "<< strOp << "requires " << strMatNum <<" operand matrices." << endl;
+	cout << "Operation "<< strOp << " requires " << strMatNum <<" operand matrices." << endl;
 }
 
 IntMat getMatrix(int op , int matNum)
@@ -151,7 +152,7 @@ void printMat(int matNum , IntMat mat)
 {
     string strMatNum = matNum == 1 ? "first" : "second";
     cout << "--------" << endl;
-    cout << "Got " << strMatNum << " matrix:"\n << endl;
+    cout << "Got " << strMatNum << " matrix:\n" << endl;
     cout << mat << endl;
 }
 
