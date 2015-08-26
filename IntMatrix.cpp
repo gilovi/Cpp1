@@ -5,7 +5,11 @@
 #include <iostream>
 
 using namespace std;
+// --------------------------------------------------------------------------------------
+// This file contains the implementation of the class IntMat.
+// --------------------------------------------------------------------------------------
 
+// ------------------ Constructors ------------------------
 IntMat::IntMat():
 _rows(0),_cols(0),_mat(nullptr)
 {
@@ -47,6 +51,7 @@ _rows(rows), _cols(cols)
 	initMat(_rows, _cols);
 }
 
+// ------------------ Operator methods ------------------------
 IntMat& IntMat::operator=(IntMat& rval)
 {
 	swap(rval);
@@ -149,7 +154,7 @@ std::ostream& operator<<(std::ostream& os, const IntMat& mat)
 	return os;
 }
 
-IntMat IntMat::trans(const IntMat& orig)
+IntMat IntMat::s_trans(const IntMat& orig)
 {
 	IntMat res = IntMat(orig._cols, orig._rows);
 	for (int i=0 ; i < orig._rows ; i++)
@@ -242,7 +247,7 @@ void IntMat::delMat()
 /**
  * initialization method for _mat
  * assumes the old _mat doesn't need to be deleted.
- **/
+ */
 void IntMat::initMat(const int rows, const int cols)
 {
 	_mat = new int *[rows];
@@ -261,13 +266,10 @@ void IntMat::getCol(int res[], const IntMat& mat, const int colNum) const
 	}
 }
 
+// ------------------ Other methods ------------------------
+
 /*
  * a helper function to perform a vector '*' operator on tow vectors.
- * name: mul
- * @param a the first vector
- * @param b the second vector
- * @return the vector * operator result.
- *
  */
 
 int mul(int a[] , int b[], const int size)

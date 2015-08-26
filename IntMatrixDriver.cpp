@@ -62,6 +62,11 @@ int main()
 		exit(0);
 
 }
+/**
+ * prints a message for getting the user desired operation
+ * and changes the input op accordingly
+ * @param op the output operation
+ */
 
 void opChoose(int& op)
 {
@@ -78,7 +83,9 @@ void opChoose(int& op)
 		op = 0;
 	}
 }
-
+/**
+ * prints the openning message for the driver.
+ */
 void printMatReqMsg(int op)
 {
 	string strOp = "";
@@ -113,7 +120,11 @@ void printMatReqMsg(int op)
 	}
 	cout << "Operation "<< strOp << " requires " << strMatNum <<" operand matrices." << endl;
 }
-
+/**
+ * prints a request for inserting a matrix by a certain flow
+ * and makes a IntMatrix out of it
+ *
+ */
 IntMat getMatrix(int op , int matNum)
 {
 
@@ -147,7 +158,9 @@ IntMat getMatrix(int op , int matNum)
 
 	return IntMat(rows, cols, mat);
 }
-
+/**
+ * prints a preceding message for matrix print
+ */
 void printMat(int matNum , IntMat mat)
 {
     string strMatNum = matNum == 1 ? "first" : "second";
@@ -155,6 +168,9 @@ void printMat(int matNum , IntMat mat)
     cout << "Got " << strMatNum << " matrix:\n" << endl;
     cout << mat << endl;
 }
+/**
+ * parses a row of user input matrix
+ */
 
 int* parseRow(string row ,int len)
 {
@@ -172,6 +188,9 @@ int* parseRow(string row ,int len)
 	}
 	return ret;
 }
+/**
+ * calculates the wanted operation using the IntMatrix public methods
+ */
 
 IntMat calc(IntMat& a, IntMat& b, int op)
 {
@@ -191,7 +210,7 @@ IntMat calc(IntMat& a, IntMat& b, int op)
                 return a*b;
 
             case 5:
-                return IntMat::trans(a);
+                return IntMat::s_trans(a);
 
             default:
                 exit(1);
@@ -203,6 +222,9 @@ IntMat calc(IntMat& a, IntMat& b, int op)
         return IntMat();
     }
 }
+/**
+ * prints a preceding message for the resulted matrix, (or an error massage)
+ */
 
 void printRes(IntMat res)
 {
@@ -217,7 +239,9 @@ void printRes(IntMat res)
         cout << "Error: add failed - different dimensions." << endl;
     }
 }
-
+/**
+ * prints a preceding message for the resulted scalar, (or an error massage)
+ */
 void printRes(int res)
 {
     if (okInput)
