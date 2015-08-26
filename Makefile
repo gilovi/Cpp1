@@ -7,7 +7,7 @@ OBJS=$(subst .cpp,.o,$(SRCS))
 
 MAIN = IntMatrixMainDriver
 
-default: $(MAIN)
+all: $(MAIN)
 
 IntMatrixMainDriver: $(OBJS)
 	$(CC) $(CFLAGS) -o $(MAIN) $(OBJS)

@@ -6,68 +6,96 @@
 
 using namespace std;
 // --------------------------------------------------------------------------------------
-// This file contains the implementation of the class IntMat.
+// This file contains the implementation of the class IntMatrix.
 // --------------------------------------------------------------------------------------
 
 // ------------------ Constructors ------------------------
-IntMat::IntMat():
-_rows(0),_cols(0),_mat(nullptr)
+/**
+ * A default constructor
+ */
+IntMatrix::IntMatrix() :
+		_rows(0), _cols(0), _mat(nullptr)
 {
 
 }
 
-IntMat::IntMat(const IntMat& toCopy):
-_rows(toCopy._rows), _cols(toCopy._cols)
+/**
+ * A copy constructor
+ */
+IntMatrix::IntMatrix(const IntMatrix& toCopy) :
+		_rows(toCopy._rows), _cols(toCopy._cols)
 {
 
-	initMat(_rows,_cols);
+	_initMat(_rows, _cols);
 	if (0 == toCopy._rows && 0 == toCopy._cols)
 	{
 		_mat = nullptr;
 	}
 	else
 	{
-		for (int i = 0; i<_rows; i++)
+		for (int i = 0; i < _rows; i++)
 		{
-			memcpy(_mat[i], toCopy._mat[i], _cols*sizeof(int));
+			memcpy(_mat[i], toCopy._mat[i], _cols * sizeof(int));
 		}
 	}
 
 }
 
-IntMat::IntMat(int rows, int cols ,int** mat):
-_rows(rows), _cols(cols), _mat(mat)
+/**
+ * A constructor for an empty matrix at given size.
+ * @param rows the rows of the output matrix
+ * @param cols the columns of the output matrix
+ */
+IntMatrix::IntMatrix(int rows, int cols) :
+		_rows(rows), _cols(cols)
+{
+	_initMat(_rows, _cols);
+}
+
+/**
+ * A constructor for a matrix at given size ,
+ * and given matrix in matrix[][] format.
+ * @param rows the rows of the output matrix.
+ * @param cols the columns of the output matrix.
+ * @param mat the matrix values.
+ */
+
+IntMatrix::IntMatrix(int rows, int cols, int** mat) :
+		_rows(rows), _cols(cols), _mat(mat)
 {
 }
 
-IntMat::~IntMat()
+/**
+ * A destructor
+ */
+IntMatrix::~IntMatrix()
 {
-	delMat();
-}
-
-IntMat::IntMat(int rows, int cols):
-_rows(rows), _cols(cols)
-{
-	initMat(_rows, _cols);
+	_delMat();
 }
 
 // ------------------ Operator methods ------------------------
-IntMat& IntMat::operator=(IntMat& rval)
+/**
+ * Basic assignmentoperator.
+ */
+IntMatrix& IntMatrix::operator=(IntMatrix& rval)
 {
-	swap(rval);
+	_swap(rval);
 	return *this;
 }
 
-IntMat& IntMat::operator+=(const IntMat& rval)
+/**
+ * Addition assignment
+ */
+IntMatrix& IntMatrix::operator+=(const IntMatrix& rval)
 {
 	if (_rows != rval._rows || _cols != rval._cols)
-    {
-        throw "matrix sizes don't match.";
-    }
-
-	for (int i=0 ; i<_rows ; i++)
 	{
-		for(int j=0; j< _cols; j++)
+		throw "matrix sizes don't match.";
+	}
+
+	for (int i = 0; i < _rows; i++)
+	{
+		for (int j = 0; j < _cols; j++)
 		{
 			_mat[i][j] += rval._mat[i][j];
 		}
@@ -75,24 +103,30 @@ IntMat& IntMat::operator+=(const IntMat& rval)
 	return *this;
 }
 
-IntMat IntMat::operator+(const IntMat& rval)
+/**
+ * Addition operator
+ */
+IntMatrix IntMatrix::operator+(const IntMatrix& rval)
 {
 
-	IntMat res = *this;
+	IntMatrix res = *this;
 	res += rval;
 	return res;
 }
 
-IntMat& IntMat::operator-=(const IntMat& rval)
+/**
+ * Subtraction assignment
+ */
+IntMatrix& IntMatrix::operator-=(const IntMatrix& rval)
 {
-    if (_rows != rval._rows || _cols != rval._cols)
-    {
-        throw "matrix sizes don't match.";
-    }
-
-	for (int i=0 ; i<_rows; i++)
+	if (_rows != rval._rows || _cols != rval._cols)
 	{
-		for(int j=0; j< _cols; j++)
+		throw "matrix sizes don't match.";
+	}
+
+	for (int i = 0; i < _rows; i++)
+	{
+		for (int j = 0; j < _cols; j++)
 		{
 			_mat[i][j] -= rval._mat[i][j];
 		}
@@ -100,66 +134,81 @@ IntMat& IntMat::operator-=(const IntMat& rval)
 	return *this;
 }
 
-IntMat IntMat::operator-(const IntMat& rval)
+/**
+ * Subtraction operator
+ */
+IntMatrix IntMatrix::operator-(const IntMatrix& rval)
 {
 
-	IntMat res = *this;
+	IntMatrix res = *this;
 	res -= rval;
 
 	return res;
 }
 
-IntMat& IntMat::operator*=(const IntMat& rval)
+/**
+ * Multiplication assignment
+ */
+IntMatrix& IntMatrix::operator*=(const IntMatrix& rval)
 {
-    if (_cols == rval._rows)
-    {
-        throw "matrix sizes don't match.";
-    }
+	if (_cols == rval._rows)
+	{
+		throw "matrix sizes don't match.";
+	}
 
-	IntMat res = IntMat(_rows, rval._cols);
+	IntMatrix res = IntMatrix(_rows, rval._cols);
 	for (int j = 0; j < res._cols; j++)
 	{
 		int rCol[rval._rows];
-		getCol(rCol, rval , j);
+		_getCol(rCol, rval, j);
 		for (int i = 0; i < res._rows; i++)
 		{
-			res._mat[i][j] = mul(_mat[i] , rCol, _cols) ;
+			res._mat[i][j] = mul(_mat[i], rCol, _cols);
 		}
 	}
-	swap(res);
+	_swap(res);
 	return *this;
 }
 
-IntMat IntMat::operator*(const IntMat& rval)
+/**
+ * matrix Multiplication operator
+ */
+IntMatrix IntMatrix::operator*(const IntMatrix& rval)
 {
-	IntMat res = *this;
+	IntMatrix res = *this;
 	res *= rval;
 	return res;
 }
 
-std::ostream& operator<<(std::ostream& os, const IntMat& mat)
+/**
+ * printing operator
+ */
+std::ostream& operator<<(std::ostream& os, const IntMatrix& mat)
 {
-	for (int i=0 ; i < mat._rows ; i++)
+	for (int i = 0; i < mat._rows; i++)
+	{
+		for (int j = 0; j < mat._cols; j++)
 		{
-			for (int j = 0 ; j < mat._cols; j++)
+			os << mat._mat[i][j];
+			if (j != mat._cols - 1)
 			{
-				os << mat._mat[i][j];
-				if (j != mat._cols - 1)
-				{
-					os << " ";
-				}
+				os << " ";
 			}
-			os << endl;
 		}
+		os << endl;
+	}
 	return os;
 }
 
-IntMat IntMat::s_trans(const IntMat& orig)
+/**
+ * trasnposes the matrix.
+ */
+IntMatrix IntMatrix::trans(const IntMatrix& orig)
 {
-	IntMat res = IntMat(orig._cols, orig._rows);
-	for (int i=0 ; i < orig._rows ; i++)
+	IntMatrix res = IntMatrix(orig._cols, orig._rows);
+	for (int i = 0; i < orig._rows; i++)
 	{
-		for (int j = 0 ; j < orig._cols; j++)
+		for (int j = 0; j < orig._cols; j++)
 		{
 			res._mat[j][i] = orig._mat[i][j];
 		}
@@ -168,61 +217,65 @@ IntMat IntMat::s_trans(const IntMat& orig)
 	return res;
 }
 
-int IntMat::s_trace(const IntMat& mat)
+/**
+ * calculates the matrix's trace.
+ */
+int IntMatrix::trace(const IntMatrix& mat)
 {
-    if (mat._rows != mat._cols)
-    {
-        throw "matrix not square.";
-    }
+	if (mat._rows != mat._cols)
+	{
+		throw "matrix not square.";
+	}
 	int res = 0;
 	//assert(mat._rows==mat._cols);
-	for (int i = 0 ; i<mat._rows ; i++)
+	for (int i = 0; i < mat._rows; i++)
 	{
 		res += mat._mat[i][i];
 	}
 	return res;
 }
-/*
- *
- * name: IntMat::operator ==
- * @param
- * @return
- *
- */
-bool IntMat::operator==(const IntMat& rhs)
-{
-	if (_rows != rhs._rows || _cols != rhs._cols  )
-	{
-	return false;
-	}
-	else
-	{
-		for (int i=0 ; i < _rows ; i++)
-		{
-			for (int j = 0 ; j < _cols; j++)
-			{
-				if (_mat[i][j] != rhs._mat[i][j])
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-}
 
-bool IntMat::operator!=(const IntMat& rhs)
-{
-	return !(*this == rhs);
-}
-
-void IntMat::swap(IntMat& other)
+///*
+// *
+// * name: IntMatrix::operator ==
+// */
+//bool IntMatrix::operator==(const IntMatrix& rhs)
+//{
+//	if (_rows != rhs._rows || _cols != rhs._cols)
+//	{
+//		return false;
+//	}
+//	else
+//	{
+//		for (int i = 0; i < _rows; i++)
+//		{
+//			for (int j = 0; j < _cols; j++)
+//			{
+//				if (_mat[i][j] != rhs._mat[i][j])
+//				{
+//					return false;
+//				}
+//			}
+//		}
+//		return true;
+//	}
+//}
+///*
+// *
+// * name: IntMatrix::operator !=
+// */
+//bool IntMatrix::operator!=(const IntMatrix& rhs)
+//{
+//	return !(*this == rhs);
+//}
+//
+void IntMatrix::_swap(IntMatrix& other)
 {
 	int** tmp = _mat;
 	_mat = other._mat;
 	other._mat = tmp;
 
-	int r,c;
+	int r, c;
 	r = _rows;
 	c = _cols;
 
@@ -232,11 +285,14 @@ void IntMat::swap(IntMat& other)
 	other._cols = c;
 }
 
-void IntMat::delMat()
+/**
+ * frees the memory of _mat
+ */
+void IntMatrix::_delMat()
 {
 	if (_mat)
 	{
-		for(int i=0; i<_rows ; i++)
+		for (int i = 0; i < _rows; i++)
 		{
 			delete _mat[i];
 		}
@@ -248,34 +304,40 @@ void IntMat::delMat()
  * initialization method for _mat
  * assumes the old _mat doesn't need to be deleted.
  */
-void IntMat::initMat(const int rows, const int cols)
+void IntMatrix::_initMat(const int rows, const int cols)
 {
 	_mat = new int *[rows];
-	for (int i = 0; i < rows ; i++)
+	for (int i = 0; i < rows; i++)
 	{
 		_mat[i] = new int[cols];
 	}
 }
 
-void IntMat::getCol(int res[], const IntMat& mat, const int colNum) const
+/**
+ * @return a specific column of a matrix
+ * @param res the result reference output.
+ * @param mat the input matrix object
+ * @param colNum the wanted column.
+ */
+void IntMatrix::_getCol(int res[], const IntMatrix& mat, const int colNum) const
 {
-    assert(mat._cols < colNum);
-	for (int i = 0 ; i<mat._rows ; i++)
+	assert(mat._cols < colNum);
+	for (int i = 0; i < mat._rows; i++)
 	{
-		res[i]=mat._mat[i][colNum];
+		res[i] = mat._mat[i][colNum];
 	}
 }
 
 // ------------------ Other methods ------------------------
 
-/*
+/**
  * a helper function to perform a vector '*' operator on tow vectors.
  */
 
-int mul(int a[] , int b[], const int size)
+int mul(int a[], int b[], const int size)
 {
 	int res = 0;
-	for(int i=0; i < size; i++)
+	for (int i = 0; i < size; i++)
 	{
 		res += a[i] * b[i];
 	}
